@@ -1,17 +1,15 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, pipeline
-import pdfplumber   # substitui o PyPDF2
+import pdfplumber
 
 app = Flask(__name__)
 CORS(app)
 
-# Carregar modelo treinado
 model_path = "./email-classifier-model"
 tokenizer = AutoTokenizer.from_pretrained(model_path)
 model = AutoModelForSequenceClassification.from_pretrained(model_path)
 
-# Criar pipeline de classificação
 classifier = pipeline("text-classification", model=model, tokenizer=tokenizer)
 
 def classificar_email(texto):
@@ -19,7 +17,6 @@ def classificar_email(texto):
     label = resultado['label']
     score = resultado['score']
 
-    # Ajuste do mapeamento
     label_map = {"LABEL_0": "Improdutivo", "LABEL_1": "Produtivo"}
     categoria = label_map.get(label, "Desconhecido")
 
@@ -34,12 +31,10 @@ def classificar_email(texto):
 def process_email():
     email_text = ""
 
-    # Caso seja texto direto (JSON)
     if request.is_json:
         data = request.json
         email_text = data.get("text", "")
 
-    # Caso seja upload de arquivo
     elif "file" in request.files:
         file = request.files["file"]
         if file.filename.endswith(".txt"):
