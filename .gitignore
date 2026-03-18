@@ -1,0 +1,6 @@
+# Ignorar modelos pesados
+backend/email-classifier-model/
+
+# Ignorar arquivos temporários
+__pycache__/
+*.pyc
