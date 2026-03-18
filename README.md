@@ -34,9 +34,16 @@ Funcionalidades
 - Sugestão de respostas automáticas.
 - Interface web simples para interação.
 - API backend que pode ser integrada a outros sistemas.
+
+Formatos aceitos
+- 	Arquivos .txt com frases simples.
+-	Arquivos .pdf contendo mensagens de texto.
+- 	Texto colado diretamente na interface web.
+
 Observações
 - Arquivos de modelo e checkpoints não são versionados (estão no .gitignore).
 - Para treinar novamente, salve os modelos na pasta backend/email-classifier-model/.
+
 Contribuição
 - Faça um fork do projeto.
 - Crie uma branch para sua feature:

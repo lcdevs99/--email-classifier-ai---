@@ -3,70 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <title>Email Classifier</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Classificador de Emails</h1>
+  <div class="container">
+    <h1>Classificador de Emails</h1>
 
-  <!-- Campo para texto -->
-  <textarea id="emailText" rows="10" cols="50" placeholder="Cole o email aqui..."></textarea><br>
-  <button onclick="processEmail()">Processar Texto</button>
+    <!-- Campo para texto -->
+    <label for="emailText">Digite ou cole o email:</label>
+    <textarea id="emailText" rows="8" placeholder="Cole o email aqui..."></textarea>
+    <button onclick="processEmail()">Processar Texto</button>
 
-  <hr>
+    <hr>
 
-  <!-- Campo para upload de arquivo -->
-  <input type="file" id="emailFile" accept=".txt,.pdf"><br>
-  <button onclick="processFile()">Processar Arquivo</button>
+    <!-- Campo para upload de arquivo -->
+    <label for="emailFile">Ou envie um arquivo (.txt ou .pdf):</label>
+    <div class="file-wrapper">
+      <input type="file" id="emailFile" accept=".txt,.pdf">
+      <button id="clearBtn" class="clear-btn" onclick="clearFile()">×</button>
+    </div>
+    <button onclick="processFile()">Processar Arquivo</button>
 
-  <div id="resultado"></div>
+    <div id="resultado"></div>
+  </div>
 
-  <script>
-    async function processEmail() {
-      const text = document.getElementById("emailText").value;
-      try {
-        const response = await fetch("http://127.0.0.1:5000/process", {
-          method: "POST",
-          headers: {"Content-Type": "application/json"},
-          body: JSON.stringify({text})
-        });
-        const result = await response.json();
-
-        if (result.error) {
-          document.getElementById("resultado").innerText = `Erro: ${result.error}`;
-        } else {
-          document.getElementById("resultado").innerText =
-            `Categoria: ${result.categoria}\nResposta: ${result.resposta}\nConfiança: ${result.confiança}`;
-        }
-      } catch (err) {
-        document.getElementById("resultado").innerText = "Erro de conexão com o servidor.";
-      }
-    }
-
-    async function processFile() {
-      const fileInput = document.getElementById("emailFile");
-      if (fileInput.files.length === 0) {
-        alert("Selecione um arquivo primeiro!");
-        return;
-      }
-      const formData = new FormData();
-      formData.append("file", fileInput.files[0]);
-
-      try {
-        const response = await fetch("http://127.0.0.1:5000/process", {
-          method: "POST",
-          body: formData
-        });
-        const result = await response.json();
-
-        if (result.error) {
-          document.getElementById("resultado").innerText = `Erro: ${result.error}`;
-        } else {
-          document.getElementById("resultado").innerText =
-            `Categoria: ${result.categoria}\nResposta: ${result.resposta}\nConfiança: ${result.confiança}`;
-        }
-      } catch (err) {
-        document.getElementById("resultado").innerText = "Erro de conexão com o servidor.";
-      }
-    }
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
