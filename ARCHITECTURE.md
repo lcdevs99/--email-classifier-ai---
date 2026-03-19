@@ -14,10 +14,10 @@ A estrutura de pastas foi definida logo no início para garantir organização e
 - Motivação: escolha leve e simples para prototipagem rápida, ideal para o desafio.
 - Primeiros passos: criamos um arquivo de teste em texto para validar a comunicação entre backend e frontend antes de evoluir para a integração com IA.
 
-## Frontend
-
 - Mantido dentro do mesmo repositório para facilitar deploy e integração.
+- Separado em **HTML**, **JavaScript** e **style.ts** para garantir modularidade e clareza na organização do código.
 - Comunicação inicial validada com o backend via requisições simples.
+
 
 ## Inteligência Artificial
 
