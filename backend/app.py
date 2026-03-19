@@ -4,16 +4,26 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification, pipe
 import pdfplumber
 import os
 
-app = Flask(__name__, static_folder="frontend")
+app = Flask(__name__, static_folder="../frontend")
 CORS(app)
 
 model_path = "lcdevs99/email-classifier-model"
-tokenizer = AutoTokenizer.from_pretrained(model_path)
-model = AutoModelForSequenceClassification.from_pretrained(model_path)
-classifier = pipeline("text-classification", model=model, tokenizer=tokenizer)
+
+classifier = None
+
+def get_classifier():
+    global classifier
+    if classifier is None:
+        tokenizer = AutoTokenizer.from_pretrained(model_path)
+        model = AutoModelForSequenceClassification.from_pretrained(model_path)
+        classifier = pipeline("text-classification", model=model, tokenizer=tokenizer)
+    return classifier
+
 
 def classificar_email(texto):
-    resultado = classifier(texto)[0]
+    clf = get_classifier()
+
+    resultado = clf(texto)[0]
     label = resultado['label']
     score = resultado['score']
 
@@ -27,13 +37,16 @@ def classificar_email(texto):
 
     return categoria, resposta, score
 
+
 @app.route("/")
 def index():
     return send_from_directory(app.static_folder, "index.html")
 
+
 @app.route("/<path:path>")
 def static_files(path):
     return send_from_directory(app.static_folder, path)
+
 
 @app.route("/process", methods=["POST"])
 def process_email():
@@ -67,6 +80,7 @@ def process_email():
         "resposta": resposta,
         "confiança": f"{score:.2f}"
     })
+
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5000)
