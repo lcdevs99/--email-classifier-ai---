@@ -2,3 +2,8 @@ flask
 flask-cors
 transformers
 torch
+pdfplumber
+gunicorn
+pandas
+datasets
+scikit-learn
