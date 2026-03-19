@@ -13,7 +13,7 @@ classifier = None
 def get_classifier():
     global classifier
     if classifier is None:
-        print("🔄 Carregando modelo...")
+        print("Carregando modelo...")
 
         from transformers import AutoTokenizer, AutoModelForSequenceClassification, pipeline
 
@@ -21,7 +21,7 @@ def get_classifier():
         model = AutoModelForSequenceClassification.from_pretrained(model_path)
         classifier = pipeline("text-classification", model=model, tokenizer=tokenizer)
 
-        print("✅ Modelo carregado!")
+        print("Modelo carregado!")
 
     return classifier
 
@@ -65,7 +65,7 @@ def process_email():
     elif "file" in request.files:
         file = request.files["file"]
 
-        print("📄 Arquivo recebido:", file.filename)
+        print("Arquivo recebido:", file.filename)
 
         if file.filename.endswith(".txt"):
             email_text = file.read().decode("utf-8")
@@ -75,7 +75,6 @@ def process_email():
 
             email_text = ""
 
-            # 🔥 Corrige problema comum no Render
             file_stream = io.BytesIO(file.read())
 
             with pdfplumber.open(file_stream) as pdf:
