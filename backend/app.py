@@ -7,7 +7,7 @@ import os
 app = Flask(__name__, static_folder="frontend")
 CORS(app)
 
-model_path = "./email-classifier-model"
+model_path = "lcdevs99/email-classifier-model"
 tokenizer = AutoTokenizer.from_pretrained(model_path)
 model = AutoModelForSequenceClassification.from_pretrained(model_path)
 classifier = pipeline("text-classification", model=model, tokenizer=tokenizer)
