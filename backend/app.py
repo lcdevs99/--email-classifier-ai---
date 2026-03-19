@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import os
+import io  
 
 app = Flask(__name__, static_folder="../frontend")
 CORS(app)
@@ -12,11 +13,15 @@ classifier = None
 def get_classifier():
     global classifier
     if classifier is None:
+        print("🔄 Carregando modelo...")
+
         from transformers import AutoTokenizer, AutoModelForSequenceClassification, pipeline
 
         tokenizer = AutoTokenizer.from_pretrained(model_path)
         model = AutoModelForSequenceClassification.from_pretrained(model_path)
         classifier = pipeline("text-classification", model=model, tokenizer=tokenizer)
+
+        print("✅ Modelo carregado!")
 
     return classifier
 
@@ -60,6 +65,8 @@ def process_email():
     elif "file" in request.files:
         file = request.files["file"]
 
+        print("📄 Arquivo recebido:", file.filename)
+
         if file.filename.endswith(".txt"):
             email_text = file.read().decode("utf-8")
 
@@ -67,7 +74,11 @@ def process_email():
             import pdfplumber
 
             email_text = ""
-            with pdfplumber.open(file) as pdf:
+
+            # 🔥 Corrige problema comum no Render
+            file_stream = io.BytesIO(file.read())
+
+            with pdfplumber.open(file_stream) as pdf:
                 for page in pdf.pages:
                     text = page.extract_text()
                     if text:
