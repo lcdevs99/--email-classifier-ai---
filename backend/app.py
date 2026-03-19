@@ -1,15 +1,15 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, pipeline
 import pdfplumber
+import os
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="frontend")
 CORS(app)
 
 model_path = "./email-classifier-model"
 tokenizer = AutoTokenizer.from_pretrained(model_path)
 model = AutoModelForSequenceClassification.from_pretrained(model_path)
-
 classifier = pipeline("text-classification", model=model, tokenizer=tokenizer)
 
 def classificar_email(texto):
@@ -26,6 +26,14 @@ def classificar_email(texto):
         resposta = "Mensagem recebida. Não é necessária ação adicional."
 
     return categoria, resposta, score
+
+@app.route("/")
+def index():
+    return send_from_directory(app.static_folder, "index.html")
+
+@app.route("/<path:path>")
+def static_files(path):
+    return send_from_directory(app.static_folder, path)
 
 @app.route("/process", methods=["POST"])
 def process_email():
@@ -61,4 +69,4 @@ def process_email():
     })
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0", port=5000)
