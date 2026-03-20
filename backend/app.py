@@ -1,19 +1,26 @@
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import os
-import io  
+import io
+
+# Se existir token no ambiente, faz login no Hugging Face Hub
+if "HF_TOKEN" in os.environ:
+    from huggingface_hub import login
+    print("Detectado HF_TOKEN, realizando login no Hugging Face Hub...")
+    login(os.environ["HF_TOKEN"])
+else:
+    print("Nenhum HF_TOKEN encontrado. Tentando baixar modelo sem autenticação...")
 
 app = Flask(__name__, static_folder="../frontend")
 CORS(app)
 
 model_path = "lcdevs99/email-classifier-model"
-
 classifier = None
 
 def get_classifier():
     global classifier
     if classifier is None:
-        print("Carregando modelo...")
+        print("Carregando modelo:", model_path)
 
         from transformers import AutoTokenizer, AutoModelForSequenceClassification, pipeline
 
@@ -21,7 +28,7 @@ def get_classifier():
         model = AutoModelForSequenceClassification.from_pretrained(model_path)
         classifier = pipeline("text-classification", model=model, tokenizer=tokenizer)
 
-        print("Modelo carregado!")
+        print("Modelo carregado com sucesso!")
 
     return classifier
 
@@ -56,15 +63,16 @@ def static_files(path):
 
 @app.route("/process", methods=["POST"])
 def process_email():
+    print(">>> Nova requisição recebida em /process")
     email_text = ""
 
     if request.is_json:
         data = request.json
+        print("Request JSON:", data)
         email_text = data.get("text", "")
 
     elif "file" in request.files:
         file = request.files["file"]
-
         print("Arquivo recebido:", file.filename)
 
         if file.filename.endswith(".txt"):
@@ -72,11 +80,8 @@ def process_email():
 
         elif file.filename.endswith(".pdf"):
             import pdfplumber
-
             email_text = ""
-
             file_stream = io.BytesIO(file.read())
-
             with pdfplumber.open(file_stream) as pdf:
                 for page in pdf.pages:
                     text = page.extract_text()
@@ -85,10 +90,14 @@ def process_email():
         else:
             return jsonify({"error": "Formato não suportado"}), 400
 
+    print("Texto extraído (preview):", email_text[:100])
+
     if not email_text.strip():
+        print("Erro: Nenhum texto encontrado")
         return jsonify({"error": "Nenhum texto encontrado"}), 400
 
     categoria, resposta, score = classificar_email(email_text)
+    print("Resultado:", categoria, resposta, score)
 
     return jsonify({
         "categoria": categoria,
