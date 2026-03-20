@@ -9,7 +9,7 @@ const isLocal =
 
 const API_URL = isLocal
   ? "http://127.0.0.1:5000/process"
-  : "/process";
+  : "https://email-classifier-ai-fz0n.onrender.com/process";
 
 
 emailText.addEventListener("input", () => {
