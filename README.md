@@ -41,6 +41,11 @@ Formatos aceitos
 - 	Texto colado diretamente na interface web.
 
 Observações
+- 	O modelo de IA está hospedado no Hugging Face Hub e configurado como público.
+- 	Isso significa que não é necessário token para rodar localmente.
+- 	Apenas operações de push/commit no repositório do modelo exigem autenticação com token.
+- 	A primeira resposta do robô pode demorar um pouco, pois o modelo precisa ser carregado na memória.
+- 	Após esse carregamento inicial, as requisições seguintes são processadas normalmente e com tempo de resposta adequado.
 - Arquivos de modelo e checkpoints não são versionados (estão no .gitignore).
 - Para treinar novamente, salve os modelos na pasta backend/email-classifier-model/.
 
