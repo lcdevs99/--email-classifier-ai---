@@ -9,14 +9,12 @@
   <div class="container">
     <h1>Classificador de Emails</h1>
 
-    <!-- Campo para texto -->
     <label for="emailText">Digite ou cole o email:</label>
     <textarea id="emailText" rows="8" placeholder="Cole o email aqui..."></textarea>
     <button onclick="processEmail()">Processar Texto</button>
 
     <hr>
 
-    <!-- Campo para upload de arquivo -->
     <label for="emailFile">Ou envie um arquivo (.txt ou .pdf):</label>
     <div class="file-wrapper">
       <input type="file" id="emailFile" accept=".txt,.pdf">
@@ -26,7 +24,7 @@
 
     <div id="resultado"></div>
   </div>
-
+  <div id="toast" class="toast"></div>
   <script src="script.js"></script>
 </body>
 </html>

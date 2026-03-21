@@ -8,7 +8,6 @@ df = pd.read_csv("../data/emails.csv")
 df = df.rename(columns={"texto": "text", "categoria": "label"})
 df['label'] = df['label'].map({"Produtivo": 1, "Improdutivo": 0})
 
-print("Distribuição de classes:\n", df['label'].value_counts())
 
 train_df, eval_df = train_test_split(df, test_size=0.2, stratify=df['label'], random_state=42)
 
